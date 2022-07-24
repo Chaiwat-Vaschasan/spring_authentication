@@ -1,0 +1,23 @@
+server:
+  port: 8082
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/spring_db
+    username: postgres
+    password: P@ssw0rd
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 5
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: none
+  session:
+    jdbc:
+      table-name: spring_session
+      initialize-schema: always
+    store-type: jdbc
+    timeout: 30

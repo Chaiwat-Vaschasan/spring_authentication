@@ -21,3 +21,12 @@ spring:
       initialize-schema: always
     store-type: jdbc
     timeout: 30
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8082
+
+SecretKey : e14c8bc2-157a-11ed-861d-0242ac120002
+

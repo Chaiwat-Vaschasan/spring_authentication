@@ -15,6 +15,8 @@ import org.springframework.security.config.annotation.web.configuration.OAuth2Au
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.core.oidc.OidcScopes;
@@ -73,15 +75,47 @@ public class AuthorizationConfiguration {
         // @formatter:on
     }
 
-    //  InMemory
     @Bean
-    public OAuth2AuthorizationConsentService authorizationConsentService() {
-        // Will be used by the ConsentController
-        return new InMemoryOAuth2AuthorizationConsentService();
+    public PasswordEncoder passwordEncoder() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    }
+
+    //  InMemory
+//    @Bean
+//    public OAuth2AuthorizationConsentService authorizationConsentService() {
+//        // Will be used by the ConsentController
+//        return new InMemoryOAuth2AuthorizationConsentService();
+//    }
+//
+//    @Bean
+//    public RegisteredClientRepository registeredClientRepository() {
+//        RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
+//                .clientId("messaging-client")
+//                .clientSecret("{noop}secret")
+//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+//                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+//                .scope(OidcScopes.OPENID)
+//                .scope("message.read")
+//                .scope("message.write")
+//                .build();
+//        return new InMemoryRegisteredClientRepository(registeredClient);
+//    }
+
+    //Database
+    @Bean
+    public OAuth2AuthorizationService authorizationService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
+        return new JdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository);
     }
 
     @Bean
-    public RegisteredClientRepository registeredClientRepository() {
+    public OAuth2AuthorizationConsentService authorizationConsentService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
+        return new JdbcOAuth2AuthorizationConsentService(jdbcTemplate, registeredClientRepository);
+    }
+
+    @Bean
+    public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
+
         RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
                 .clientId("messaging-client")
                 .clientSecret("{noop}secret")
@@ -91,49 +125,14 @@ public class AuthorizationConfiguration {
                 .scope(OidcScopes.OPENID)
                 .scope("message.read")
                 .scope("message.write")
+                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
                 .build();
-        return new InMemoryRegisteredClientRepository(registeredClient);
+
+        // Save registered client in db as if in-memory
+        JdbcRegisteredClientRepository registeredClientRepository = new JdbcRegisteredClientRepository(jdbcTemplate);
+        registeredClientRepository.save(registeredClient);
+
+        return registeredClientRepository;
     }
-
-     // Database
-//    @Bean
-//    public OAuth2AuthorizationService authorizationService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
-//        return new JdbcOAuth2AuthorizationService(jdbcTemplate, registeredClientRepository);
-//    }
-//
-//    @Bean
-//    public OAuth2AuthorizationConsentService authorizationConsentService(JdbcTemplate jdbcTemplate, RegisteredClientRepository registeredClientRepository) {
-//        return new JdbcOAuth2AuthorizationConsentService(jdbcTemplate, registeredClientRepository);
-//    }
-
-    // @formatter:off
-//    @Bean
-//    public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate) {
-//
-//        RegisteredClient registeredClient = RegisteredClient.withId(UUID.randomUUID().toString())
-//                .clientId("messaging-client")
-//                .clientSecret("{noop}secret")
-//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-//                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-//                .scope(OidcScopes.OPENID)
-//                .scope("message.read")
-//                .scope("message.write")
-////                .tokenSettings(TokenSettings.builder()
-////                        .accessTokenTimeToLive(Duration.ofMinutes(10))
-////                        .refreshTokenTimeToLive(Duration.ofHours(8))
-////                        .build())
-//                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
-//                .build();
-//
-//        // Save registered client in db as if in-memory
-//        JdbcRegisteredClientRepository registeredClientRepository = new JdbcRegisteredClientRepository(jdbcTemplate);
-//        registeredClientRepository.save(registeredClient);
-//
-//        return registeredClientRepository;
-//    }
-    // @formatter:on
-
 
 }

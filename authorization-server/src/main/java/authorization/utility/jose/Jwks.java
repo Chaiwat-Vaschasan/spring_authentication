@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 public final  class Jwks {
 
     @Value("${SecretKey}")
-    private static String key;
+    private static String secretKey;
     public static RSAKey generateRsa() {
         KeyPair keyPair = KeyGeneratorUtils.generateRsaKey();
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
@@ -27,7 +27,7 @@ public final  class Jwks {
         // @formatter:off
         return new RSAKey.Builder(publicKey)
                 .privateKey(privateKey)
-                .keyID(UUID.randomUUID().toString())
+                .keyID(secretKey)
                 .build();
         // @formatter:on
     }
@@ -40,16 +40,16 @@ public final  class Jwks {
         // @formatter:off
         return new ECKey.Builder(curve, publicKey)
                 .privateKey(privateKey)
-                .keyID(UUID.randomUUID().toString())
+                .keyID(secretKey)
                 .build();
         // @formatter:on
     }
 
     public static OctetSequenceKey generateSecret() {
-        SecretKey secretKey = KeyGeneratorUtils.generateSecretKey();
+        SecretKey key = KeyGeneratorUtils.generateSecretKey();
         // @formatter:off
-        return new OctetSequenceKey.Builder(secretKey)
-                .keyID(key)
+        return new OctetSequenceKey.Builder(key)
+                .keyID(secretKey)
                 .build();
         // @formatter:on
     }

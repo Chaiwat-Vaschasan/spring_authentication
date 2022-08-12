@@ -1,8 +1,9 @@
 package authorization.controller;
 
 import authorization.model.AccountDetailModel;
+import authorization.model.ClientModel;
 import authorization.model.ResponseModel;
-import authorization.service.AccountService;
+import authorization.service.ClientService;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,14 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("api/account")
-public class AccountController {
+@RequestMapping("/api/client")
+public class ClientController {
 
-    @Autowired private AccountService accountService;
+    @Autowired private ClientService clientService;
 
     @PostMapping("/registered")
-    public ResponseModel<UUID> registered(@RequestBody AccountDetailModel account){
-        var res = accountService.registered(account);
+    public ResponseModel<UUID> registered(@RequestBody ClientModel client){
+        var res = clientService.registered(client);
         return  res;
     }
 }

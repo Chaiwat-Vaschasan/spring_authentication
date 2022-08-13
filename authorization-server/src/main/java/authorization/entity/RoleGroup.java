@@ -1,9 +1,11 @@
 package authorization.entity;
 
+import authorization.model.RoleGroupModel;
 import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.Instant;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,7 +17,7 @@ import java.sql.Timestamp;
 public class RoleGroup {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name = "role_id", nullable = false)
     private Integer roleId;
 
@@ -33,5 +35,17 @@ public class RoleGroup {
 
     @Column(name = "update_by")
     private String updateBy;
+
+    public void created(RoleGroupModel item, String by){
+        createDate = Timestamp.from(Instant.now());
+        createBy = by;
+        roleName = item.getRoleName();
+    }
+
+    public void updated(RoleGroupModel item, String by){
+        updateDate = Timestamp.from(Instant.now());
+        updateBy = by;
+        roleName = item.getRoleName();
+    }
 
 }

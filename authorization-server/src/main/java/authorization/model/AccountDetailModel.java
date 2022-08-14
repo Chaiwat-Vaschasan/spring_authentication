@@ -71,6 +71,7 @@ public class AccountDetailModel implements UserDetails {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         for (String role:roles) {
             var authority = new SimpleGrantedAuthority(role);
+            grantedAuthorities.add(authority);
         }
         authorities = grantedAuthorities;
     }

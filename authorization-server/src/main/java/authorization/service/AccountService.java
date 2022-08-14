@@ -7,6 +7,7 @@ import authorization.repository.AccountRepository;
 import authorization.repository.RoleRepository;
 import lombok.var;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,7 +33,7 @@ public class AccountService implements UserDetailsService {
         var accountDetail = new AccountDetailModel();
         accountDetail.setAccount(account,role);
 
-        return accountDetail;
+        return User.withUserDetails(accountDetail).build();
     }
 
     public ResponseModel<UUID> registered(AccountDetailModel item){

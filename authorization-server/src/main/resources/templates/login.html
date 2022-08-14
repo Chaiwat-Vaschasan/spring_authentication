@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel= "stylesheet" type= "text/css"  th:href="@{/login.css}">
+</head>
+
+<body>
+<div class="container" id="container">
+    <div class="form-container sign-in-container">
+        <form th:action="@{/login}" method="post">
+            <h1 style="margin-bottom: 20px;">Sign in</h1>
+            <input type="text" placeholder="Username" name="username" id="username" required autofocus />
+            <input type="password" placeholder="Password" name="password" id="password" required />
+            <button style="margin-top: 20px;" type="submit" >Sign In</button>
+            <div th:if="${error}" class="alert">
+                <strong>Login failed!</strong>  Please check your account.
+            </div>
+        </form>
+    </div>
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-right">
+                <img src="../../static/icon-user.png" width="170px" height="170px" th:src="@{/icon-user.png}"/>
+                <h1>Account Login</h1>
+                <p>Spring boot authentication server</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>

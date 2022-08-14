@@ -11,6 +11,8 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
@@ -21,7 +23,8 @@ public class SecurityConfiguration {
         http
                 .userDetailsService(accountService)
                 .cors().disable().csrf().disable()
-                .authorizeRequests().antMatchers("/").permitAll();
+                .authorizeRequests().antMatchers("/").permitAll().and()
+                .formLogin().loginPage("/login").failureUrl("/login-error").permitAll();
 
         return http.build();
     }

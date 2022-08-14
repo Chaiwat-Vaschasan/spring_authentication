@@ -28,5 +28,9 @@ spring:
         jwt:
           issuer-uri: http://localhost:8082
 
+  thymeleaf:
+    cache: false
+    mode: HTML
+
 SecretKey : e14c8bc2-157a-11ed-861d-0242ac120002
 

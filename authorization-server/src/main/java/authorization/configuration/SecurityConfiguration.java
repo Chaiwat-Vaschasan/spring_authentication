@@ -23,8 +23,9 @@ public class SecurityConfiguration {
         http
                 .userDetailsService(accountService)
                 .cors().disable().csrf().disable()
-                .authorizeRequests().antMatchers("/").permitAll().and()
-                .formLogin().loginPage("/login").failureUrl("/login-error").permitAll();
+                .authorizeRequests(authorizeRequests -> authorizeRequests.antMatchers("/oauth2/**").authenticated())
+                .formLogin().loginPage("/login").failureUrl("/login-error").permitAll().and()
+                .authorizeRequests(authorizeRequests -> authorizeRequests.antMatchers("/api/**").authenticated()).oauth2ResourceServer().jwt();
 
         return http.build();
     }

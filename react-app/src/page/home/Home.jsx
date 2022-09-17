@@ -1,9 +1,14 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useState } from 'react';
 import reactLogo from '../../assets/react.svg';
 import './Home.css';
 
 const Home = () => {
+    
+    useEffect(() =>{
+        console.log(import.meta.env.VITE_ENV)
+    },[])
+
     const [count, setCount] = useState(0)
     return (
         <div className="App">

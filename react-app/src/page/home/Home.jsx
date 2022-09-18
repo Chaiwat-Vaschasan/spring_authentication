@@ -2,14 +2,19 @@ import React, {useEffect} from 'react';
 import { useState } from 'react';
 import reactLogo from '../../assets/react.svg';
 import './Home.css';
+import httpClient  from '../../service/http.client.service';
 
 const Home = () => {
     
+    const [count, setCount] = useState(0);
+
     useEffect(() =>{
-        console.log(import.meta.env.VITE_ENV)
+        httpClient.get(import.meta.env.VITE_API_URL + '/api/data/test').then(res =>{
+            console.log(res.data);
+        },(error) => console.log(error))
     },[])
 
-    const [count, setCount] = useState(0)
+    
     return (
         <div className="App">
             <div>
